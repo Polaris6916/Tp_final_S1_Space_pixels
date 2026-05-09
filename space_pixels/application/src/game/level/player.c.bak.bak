@@ -1,0 +1,235 @@
+﻿/*
+    Copyright (c) Arnaud BANNIER and Nicolas BODIN.
+    Licensed under the MIT License.
+    See LICENSE.md in the project root for license information.
+*/
+
+#include "game/level/player.h"
+#include "game/level/level_scene.h"
+
+Player *Player_create(LevelScene *levelScene, int playerID)
+{
+    AssetManager *assets = LevelScene_getAssetManager(levelScene);
+
+    Player *self = (Player *)calloc(1, sizeof(Player));
+    AssertNew(self);
+
+    GameConfig* gameConfig = LevelScene_getGameConfig(levelScene);
+    self->m_scene = levelScene;
+    self->m_position = Vec2_set(4.f, 4.5f + playerID);
+    self->m_radius = 0.15f;
+    self->m_playerID = playerID;
+    self->m_state = PLAYER_STATE_FLYING;
+    self->m_hp = PLAYER_MAX_HP;
+    self->m_type = gameConfig->playerType;
+
+    //switch (type)
+    //{ 
+    //* TODO 4 : Affichage du joueur
+    SpriteSheet *spriteSheet = NULL;
+    spriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_PLAYER_POWERING);
+    self->m_animEngine = SpriteAnim_create(spriteSheet->rectCount, 0.3f, -1);
+    self->m_dyingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_PLAYER_DYING);
+    self->m_dyingAnim = SpriteAnim_create(self->m_dyingSpriteSheet->rectCount, 0.8f, 1);
+    self->m_healthSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_PLAYER_HEALTH);
+    self->m_healthBar = SpriteAnim_create(self->m_healthSpriteSheet->rectCount, 0.8f, 1);    
+    //*/
+
+    return self;
+}
+
+void Player_destroy(Player *self)
+{
+    if (!self) return;
+
+    //* TODO 4 : Affichage du joueur
+    SpriteAnim_destroy(self->m_animEngine);
+    SpriteAnim_destroy(self->m_dyingAnim);
+    //*/
+
+    free(self);
+}
+
+void Player_update(Player *self)
+{
+    LevelScene *scene = self->m_scene;
+    Level *level = LevelScene_getLevel(scene);
+    PlayerInput playerInput = Player_getInput(self);
+    float delta = Timer_getDelta(g_time);
+
+    // test si le vaisseau est détruit
+    if (self->m_state == PLAYER_STATE_DEAD) return;
+    {
+        scene = self->m_scene;
+        AssetManager* assets = LevelScene_getAssetManager(scene);
+    }
+
+
+    //* TODO 7 : Déplacement du joueur
+    // Mise à jour de la vitesse en fonction de l'état des touches
+    Vec2 velocity = Vec2_scale(playerInput.axis, 3.f);
+
+    // Mise à jour de la position
+    // Nouvelle pos. = ancienne pos. + (vitesse * temps écoulé)
+    Vec2 nouvelle_position = Vec2_add(
+        self->m_position,
+        Vec2_scale(velocity, delta));
+
+    if (nouvelle_position.x <= 15.7 && nouvelle_position.x >= 0.24 && nouvelle_position.y <= 8.65 && nouvelle_position.y >= 0.37)
+    {
+        self->m_position = Vec2_add(
+            self->m_position,
+            Vec2_scale(velocity, delta)
+        );
+    }
+    
+    //*/
+
+    // Bullet par défaut
+    /* TODO 8 : Tir du joueur V1
+    if (playerInput.shootPressed)
+    {
+        Vec2 velocity = Vec2_set(8.0f, 0.0f);
+        Bullet *bullet = Bullet_create(
+            self->m_scene, self->m_position, velocity,
+            BULLET_PLAYER_DEFAULT, 90.0f, DAMAGE_SMALL, self->m_playerID);
+        LevelScene_addBullet(self->m_scene, bullet);
+    }
+    //*/
+    //* TODO 12 : Tir du joueur V2
+    if (playerInput.triggerR > 0.f || playerInput.shootDown)
+    {
+        const float bulletTime = 0.2f;
+        self->m_accuBullet += delta;
+        if (self->m_accuBullet > bulletTime)
+        {
+            self->m_accuBullet = fmodf(self->m_accuBullet, bulletTime);
+
+            Vec2 velocity = Vec2_set(8.0f, 0.0f);
+            Bullet *bullet = Bullet_create(
+                self->m_scene, self->m_position, velocity,
+                BULLET_PLAYER_DEFAULT, 90.0f, DAMAGE_SMALL, self->m_playerID);
+            LevelScene_addBullet(self->m_scene, bullet);
+
+            AssetManager *assets = LevelScene_getAssetManager(scene);
+            Game_playSoundFX(assets, SOUND_PLAYER_FIRE);
+        }
+    }
+    //*/
+
+    //* TODO 6 : Affichage du joueur
+    
+    if (self->m_state == PLAYER_STATE_FLYING)
+    {
+        SpriteAnim_update(self->m_animEngine, delta);
+    }
+    else if (self->m_state == PLAYER_STATE_DYING)
+    {
+        SpriteAnim_update(self->m_dyingAnim, delta);
+        if (SpriteAnim_isFinished(self->m_dyingAnim))
+        {
+            self->m_state = PLAYER_STATE_DEAD;
+            return;
+        }
+    }
+
+    //*/
+}
+
+void Player_render(Player* self)
+{
+    // On récupère des infos essentielles
+    LevelScene* scene = self->m_scene;
+    AssetManager* assets = LevelScene_getAssetManager(scene);
+    Camera* camera = LevelScene_getCamera(scene);
+    SDL_Rect* src = NULL;
+    SDL_Texture* texture = NULL;
+    double angle = 90.0;
+    SpriteSheet* spriteSheet = NULL;
+    int index = 0;
+
+    // On calcule la position en pixels en fonction de la position 
+    // en tuiles, la taille de la fenêtre et la taille des textures.
+    float scale = Camera_getWorldToViewScale(camera);
+    SDL_FRect dst = { 0 };
+    dst.h = 48 * PIX_TO_WORLD * scale;
+    dst.w = 48 * PIX_TO_WORLD * scale;
+    Camera_worldToView(camera, self->m_position, &dst.x, &dst.y);
+    // Le point de référence est le centre de l'objet
+    dst.x -= 0.50f * dst.w;
+    dst.y -= 0.50f * dst.h;
+
+    //* health bar
+    SDL_FRect dst_health = { 0 };
+    dst_health.h = 70;
+    dst_health.w = 80;
+    dst_health.x = dst.x +10;
+    dst_health.y = dst.y -20;
+    //*/
+    
+    //* TODO 3 et 5 : Affichage du joueur
+    // Vaisseau
+    if (self->m_state == PLAYER_STATE_FLYING)
+    {
+        spriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_PLAYER);
+        index = 0;
+        SpriteSheet_renderCopyF(spriteSheet, index, g_renderer, &dst, angle, NULL, 0);
+
+        // Propulsion - flammes
+        spriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_PLAYER_POWERING);
+        index = SpriteAnim_getFrameIndex(self->m_animEngine);
+        SpriteSheet_renderCopyF(spriteSheet, index, g_renderer, &dst, angle, NULL, 0);
+
+        // Réacteurs
+        spriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_PLAYER_ENGINE);
+        index = 0;
+        SpriteSheet_renderCopyF(spriteSheet, index, g_renderer, &dst, angle, NULL, 0);
+
+        // bar de vie
+        if (self->m_hp == 80)
+            index = 0;
+        else if (self->m_hp <= 5)
+            index = 6;
+        else
+            index = 8 - ((self->m_hp - (self->m_hp % 10) + 10) / 10);
+
+        spriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_PLAYER_HEALTH);
+        SpriteSheet_renderCopyF(spriteSheet, index, g_renderer, &dst_health, 0, NULL, 0);
+        //*/
+    }
+    //*  destruction vaisseau
+    else if (self->m_state == PLAYER_STATE_DYING)
+    {
+        spriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_PLAYER_DYING);
+        index = SpriteAnim_getFrameIndex(self->m_dyingAnim);
+        SpriteSheet_renderCopyF(spriteSheet, index, g_renderer, &dst , angle, NULL, 0);
+    }//*/
+}
+
+void Player_drawGizmos(Player *self, Gizmos *gizmos)
+{
+    Gizmos_drawCircle(gizmos, self->m_position, self->m_radius);
+}
+
+void Player_damage(Player *self, int damage)
+{
+    if (self->m_state != PLAYER_STATE_FLYING) return;
+    self->m_hp -= damage ;
+
+    LevelScene* scene = self->m_scene;
+    AssetManager* assets = LevelScene_getAssetManager(scene);
+
+    if (self->m_hp <= 0)
+    {
+        self->m_state = PLAYER_STATE_DYING;
+
+        SpriteAnim_restart(self->m_dyingAnim);
+        Game_playSoundFX(assets, SOUND_ENEMY_DIYNG);
+    }
+}
+
+PlayerInput Player_getInput(Player *self)
+{
+    Input *input = LevelScene_getInput(self->m_scene);
+    return input->players[self->m_playerID];
+}

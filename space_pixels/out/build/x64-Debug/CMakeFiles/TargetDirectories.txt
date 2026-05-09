@@ -1,0 +1,5 @@
+D:/Tp/space_pixels/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+D:/Tp/space_pixels/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
+D:/Tp/space_pixels/out/build/x64-Debug/application/CMakeFiles/application.dir
+D:/Tp/space_pixels/out/build/x64-Debug/application/CMakeFiles/edit_cache.dir
+D:/Tp/space_pixels/out/build/x64-Debug/application/CMakeFiles/rebuild_cache.dir

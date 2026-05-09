@@ -1,0 +1,31 @@
+Fait par Riwal Clech :
+- Les enemis donc :
+	- Battlecruiser (tir en cercle)
+	- Les Torpedo (tir des missiles guidée)
+	- Les scout (tir à haute vélocitée)
+	- Les fregate (Tir de missile rouge très bien guidée)
+
+Ainsi que les bullet et leur comportement :
+	- Bullet de scout de haut vellocitée
+	- Missile bleu un peu guidée
+	- Missile rouge très bien guidée
+	- Bullet de Battlecruiser qui tir en cercle
+
+Ainsi que l'aparition des vaisseaux ainsi que leur mouvement circulaire
+Gérée les collision entre des balles du joueur et les missile rouge (de la frégate)
+Gérée la collision entre le vaisseaux dash et enemis (juste la collision les damage sont fait par Anatole)
+
+Fait par Anatole BARBOUX :
+Le Menu :
+	-le nombre de joueur
+	-désactiver/activer la musique
+	-désactiver/activer le son des anims
+	-le choix du type de vaisseau (entre basic et dash)
+
+Type de vaisseau joueur:
+	-Le type dash
+	   -> n'a pas de bullet, il attaque les enemies en fonçant dedans (ne prend pas de degat quand il avance car il deploit un boulcier animé)
+
+bare de vie :
+	-bare de vie des ennemies
+	-bare de vie des joueurs

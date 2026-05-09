@@ -1,0 +1,516 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "D:/Tp/space_pixels/_bin/application.exe"
+		},
+		{
+			"path" : "D:/Tp/space_pixels/_bin/application.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"target_link_libraries",
+			"target_compile_definitions",
+			"target_include_directories",
+			"target_compile_features",
+			"target_sources"
+		],
+		"files" : 
+		[
+			"application/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 3,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 38,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 41,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 15,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 51,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 14,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 17,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1 -std:c11"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 4,
+					"define" : "_CRT_SECURE_NO_WARNINGS"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 5,
+					"path" : "D:/Tp/space_pixels/application/src"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Tp/space_pixels/third_party/SDL2-2.30.6/cmake/../include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Tp/space_pixels/third_party/SDL2_image-2.8.2/cmake/../include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Tp/space_pixels/third_party/SDL2_ttf-2.22.0/cmake/../include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "D:/Tp/space_pixels/third_party/SDL2_mixer-2.8.0/cmake/../include"
+				}
+			],
+			"language" : "C",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					6
+				],
+				"standard" : "11"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20
+			]
+		}
+	],
+	"id" : "application::@8badf0d542dc2e21c899",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /MDd /Zi /Ob0 /Od /RTC1",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:console",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "D:\\Tp\\space_pixels\\third_party\\SDL2-2.30.6\\cmake\\..\\lib\\x64\\SDL2main.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "D:\\Tp\\space_pixels\\third_party\\SDL2-2.30.6\\cmake\\..\\lib\\x64\\SDL2.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "D:\\Tp\\space_pixels\\third_party\\SDL2_image-2.8.2\\cmake\\..\\lib\\x64\\SDL2_image.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "D:\\Tp\\space_pixels\\third_party\\SDL2_ttf-2.22.0\\cmake\\..\\lib\\x64\\SDL2_ttf.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "D:\\Tp\\space_pixels\\third_party\\SDL2_mixer-2.8.0\\cmake\\..\\lib\\x64\\SDL2_mixer.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "C"
+	},
+	"name" : "application",
+	"nameOnDisk" : "application.exe",
+	"paths" : 
+	{
+		"build" : "application",
+		"source" : "application"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "sources\\game",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				21,
+				22
+			]
+		},
+		{
+			"name" : "sources\\game\\level",
+			"sourceIndexes" : 
+			[
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29
+			]
+		},
+		{
+			"name" : "sources\\game\\title",
+			"sourceIndexes" : 
+			[
+				9,
+				10,
+				30,
+				31
+			]
+		},
+		{
+			"name" : "sources",
+			"sourceIndexes" : 
+			[
+				11,
+				32
+			]
+		},
+		{
+			"name" : "sources\\utils",
+			"sourceIndexes" : 
+			[
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/game_common.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/input.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/level/bullet.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/level/enemy.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/level/item.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/level/level.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/level/level_scene.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/level/level_ui.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/level/player.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/title/title_scene.c",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/game/title/title_ui.c",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/main.c",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/utils/asset_manager.c",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/utils/axis.c",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/utils/camera.c",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/utils/common.c",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/utils/gizmos.c",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/utils/math.c",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/utils/sprite_anim.c",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/utils/text.c",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"compileGroupIndex" : 0,
+			"path" : "application/src/utils/timer.c",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/game_common.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/input.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/level/bullet.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/level/enemy.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/level/item.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/level/level.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/level/level_scene.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/level/level_ui.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/level/player.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/title/title_scene.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/game/title/title_ui.h",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/settings.h",
+			"sourceGroupIndex" : 3
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/utils/asset_manager.h",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/utils/axis.h",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/utils/camera.h",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/utils/common.h",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/utils/gizmos.h",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/utils/math.h",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/utils/sprite_anim.h",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/utils/text.h",
+			"sourceGroupIndex" : 4
+		},
+		{
+			"backtrace" : 7,
+			"path" : "application/src/utils/timer.h",
+			"sourceGroupIndex" : 4
+		}
+	],
+	"type" : "EXECUTABLE"
+}

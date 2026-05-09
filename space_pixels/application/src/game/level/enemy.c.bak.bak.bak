@@ -1,0 +1,526 @@
+﻿/*
+    Copyright (c) Arnaud BANNIER and Nicolas BODIN.
+    Licensed under the MIT License.
+    See LICENSE.md in the project root for license information.
+*/
+
+#include "game/level/enemy.h"
+#include "game/level/level_scene.h"
+
+Enemy *Enemy_create(LevelScene *scene, int type, Vec2 position)
+{
+    Enemy *self = (Enemy *)calloc(1, sizeof(Enemy));
+    AssertNew(self);
+
+    self->m_scene = scene;
+    self->m_type = type;
+    self->m_state = ENEMY_STATE_SHOWING;
+    
+    Vec2 position_aparition = { 19, position.y };
+    self->m_position = position_aparition;
+    self->m_position_final = position;
+    
+    Vec2 rayon = { self->m_position_final.x - RAYON_CERCLE * PIX_TO_WORLD, self->m_position_final.y };
+    self->m_rayon = rayon;
+    self->m_angle_translation = -M_PI;
+
+    AssetManager *assets = LevelScene_getAssetManager(self->m_scene);
+    switch (type)
+    {
+    default:
+    case ENEMY_TYPE_FIGHTER:
+        self->m_hp = FIGHTER_MAX_HP;
+        self->m_extent = Vec2_set(64 * PIX_TO_WORLD, 64 * PIX_TO_WORLD);
+        self->m_radius = 0.25f; //Taille du cercle de collision
+
+        //* TODO 13: Affichage d'un ennemi
+        self->m_firingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_FIGHTER_FIRING);
+        self->m_firingAnim = SpriteAnim_create(self->m_firingSpriteSheet->rectCount, 1.5f, -1);
+        self->m_dyingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_FIGHTER_DYING);
+        self->m_dyingAnim = SpriteAnim_create(self->m_dyingSpriteSheet->rectCount, 0.8f, 1);
+        self->m_healthSpriteSheet_ennemy = AssetManager_getSpriteSheet(assets, SPRITE_ENNEMY_HEALTH);
+        self->m_healthBar_ennemy = SpriteAnim_create(self->m_healthSpriteSheet_ennemy->rectCount, 0.8f, 1);
+        //*/
+        break;
+
+
+    case ENEMY_TYPE_SCOUT:
+        self->m_hp = SCOUT_MAX_HP;
+        self->m_extent = Vec2_set(64 * PIX_TO_WORLD, 64 * PIX_TO_WORLD);
+        self->m_radius = 0.20f; //Taille du cercle de collision
+
+        //* TODO 13: Affichage d'un ennemi
+        self->m_firingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_SCOUT_FIRING);
+        self->m_firingAnim = SpriteAnim_create(self->m_firingSpriteSheet->rectCount, 0.75f, -1);
+        self->m_dyingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_SCOUT_DYING);
+        self->m_dyingAnim = SpriteAnim_create(self->m_dyingSpriteSheet->rectCount, 0.8f, 1);
+        self->m_healthSpriteSheet_ennemy = AssetManager_getSpriteSheet(assets, SPRITE_ENNEMY_HEALTH);
+        self->m_healthBar_ennemy = SpriteAnim_create(self->m_healthSpriteSheet_ennemy->rectCount, 0.8f, 1);
+        //*/
+        break;
+
+
+    case ENEMY_TYPE_TORPEDO:
+        self->m_hp = TORPEDO_MAX_HP;
+        self->m_extent = Vec2_set(64 * PIX_TO_WORLD, 64 * PIX_TO_WORLD);
+        self->m_radius = 0.35f; //Taille du cercle de collision
+
+        //* TODO 13: Affichage d'un ennemi
+        self->m_firingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_TORPEDO_FIRING);
+        self->m_firingAnim = SpriteAnim_create(self->m_firingSpriteSheet->rectCount, 1.5f, -1);
+        self->m_dyingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_TORPEDO_DYING);
+        self->m_dyingAnim = SpriteAnim_create(self->m_dyingSpriteSheet->rectCount, 0.8f, 1);
+        self->m_healthSpriteSheet_ennemy = AssetManager_getSpriteSheet(assets, SPRITE_ENNEMY_HEALTH);
+        self->m_healthBar_ennemy = SpriteAnim_create(self->m_healthSpriteSheet_ennemy->rectCount, 0.8f, 1);
+        //*/
+        break;
+
+    case ENEMY_TYPE_BATTLECRUISER:
+        self->m_hp = BATTLECRUISER_MAX_HP;
+        self->m_extent = Vec2_set(128 * PIX_TO_WORLD, 128 * PIX_TO_WORLD);
+        self->m_radius = 0.75f; //Taille du cercle de collision
+
+        self->m_angle_tir = -90.0f;
+
+        //* TODO 13: Affichage d'un ennemi
+        self->m_firingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_BATTLECRUISER_FIRING);
+        self->m_firingAnim = SpriteAnim_create(self->m_firingSpriteSheet->rectCount, 1.5f, -1);
+        self->m_dyingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_BATTLECRUISER_DYING);
+        self->m_dyingAnim = SpriteAnim_create(self->m_dyingSpriteSheet->rectCount, 0.8f, 1);
+        self->m_healthSpriteSheet_ennemy = AssetManager_getSpriteSheet(assets, SPRITE_ENNEMY_HEALTH);
+        self->m_healthBar_ennemy = SpriteAnim_create(self->m_healthSpriteSheet_ennemy->rectCount, 0.8f, 1);
+        //*/
+        break;
+
+    case ENEMY_TYPE_FRIGATE:
+        self->m_hp = FRIGATE_MAX_HP;
+        self->m_extent = Vec2_set(64 * PIX_TO_WORLD, 64 * PIX_TO_WORLD);
+        self->m_radius = 0.35f; //Taille du cercle de collision
+
+        self->m_angle_tir = -90.0f;
+
+        //* TODO 13: Affichage d'un ennemi
+        self->m_firingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_FRIGATE_FIRING);
+        self->m_firingAnim = SpriteAnim_create(self->m_firingSpriteSheet->rectCount, 1.5f, -1);
+        self->m_dyingSpriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_FRIGATE_DYING);
+        self->m_dyingAnim = SpriteAnim_create(self->m_dyingSpriteSheet->rectCount, 0.8f, 1);
+        self->m_healthSpriteSheet_ennemy = AssetManager_getSpriteSheet(assets, SPRITE_ENNEMY_HEALTH);
+        self->m_healthBar_ennemy = SpriteAnim_create(self->m_healthSpriteSheet_ennemy->rectCount, 0.8f, 1);
+        //*/
+        break;
+    }
+    return self;
+}
+
+void Enemy_destroy(Enemy *self)
+{
+    if (!self) return;
+
+    //* TODO 13: Affichage d'un ennemi
+    SpriteAnim_destroy(self->m_firingAnim);
+    SpriteAnim_destroy(self->m_dyingAnim);
+    //*/
+
+    free(self);
+}
+
+void Enemy_update(Enemy *self)
+{
+    LevelScene *scene = self->m_scene;
+    float shootTime = 2.0f;
+    float delta = Timer_getDelta(g_time);
+
+
+    //* TODO 13: Affichage d'un ennemi
+    if (self->m_state == ENEMY_STATE_FIRING)
+    {
+        SpriteAnim_update(self->m_firingAnim, delta);
+    }
+    else if (self->m_state == ENEMY_STATE_DYING)
+    {
+        SpriteAnim_update(self->m_dyingAnim, delta);
+        if (SpriteAnim_isFinished(self->m_dyingAnim))
+        {
+            self->m_state = ENEMY_STATE_DEAD;
+            return;
+        }
+    }
+    else if (self->m_state == ENEMY_STATE_SHOWING)
+    {
+        if (self->m_position_final.x > self->m_position.x )
+        {
+            self->m_state = ENEMY_STATE_FIRING;
+        }
+        else
+        {
+            self->m_position.x -= 0.5f;
+        }
+        return;
+    }
+    //*/
+    self->m_angle_translation += 0.05;
+
+    self->m_position.x = self->m_rayon.x + RAYON_CERCLE * PIX_TO_WORLD * cos(self->m_angle_translation);
+    self->m_position.y = self->m_rayon.y + RAYON_CERCLE * PIX_TO_WORLD *  sin(self->m_angle_translation);
+
+    switch (self->m_type)
+    {
+    case ENEMY_TYPE_FIGHTER:
+        //* TODO 14: Tir d'un ennemi
+        Enemy_updateFigther(self);
+        //*/
+        break;
+    
+    //*
+    case ENEMY_TYPE_SCOUT:
+        Enemy_updateScout(self);
+        break;
+    //*/
+
+    //*
+    case ENEMY_TYPE_TORPEDO:
+        Enemy_updateTorpedo(self);
+        break;
+        //*/
+
+    case ENEMY_TYPE_BATTLECRUISER:
+        Enemy_updateBattlecruiser(self);
+        break;
+    
+    case ENEMY_TYPE_FRIGATE:
+        Enemy_updateFrigate(self);
+        break;
+
+    default: break;
+    }
+}
+
+void Enemy_updateFigther(Enemy *self)
+{
+    if (self->m_state != ENEMY_STATE_FIRING)
+        return;
+
+    LevelScene *scene = self->m_scene;
+    AssetManager *assets = LevelScene_getAssetManager(scene);
+
+    //* TODO 13: Tir d'un ennemi
+    if (SpriteAnim_frameChanged(self->m_firingAnim) == false) return;
+
+    int idx = SpriteAnim_getFrameIndex(self->m_firingAnim);
+    if (idx == 1)
+    {
+        Vec2 velocity = Vec2_set(-3.5f, 0.0f);
+        Vec2 position = Vec2_add(self->m_position, Vec2_set(-6 * PIX_TO_WORLD, +6 * PIX_TO_WORLD));
+        Bullet *bullet = Bullet_create(scene, position, velocity, BULLET_FIGHTER, -90.0f, DAMAGE_SMALL, -1);
+        LevelScene_addBullet(scene, bullet);
+        Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+    }
+    else if (idx == 3)
+    {
+        Vec2 velocity = Vec2_set(-3.5f, 0.0f);
+        Vec2 position = Vec2_add(self->m_position, Vec2_set(-6 * PIX_TO_WORLD, -6 * PIX_TO_WORLD));
+        Bullet *bullet = Bullet_create(scene, position, velocity, BULLET_FIGHTER, -90.0f, DAMAGE_SMALL, -1);
+        LevelScene_addBullet(scene, bullet);
+        Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+    }
+    //*/
+}
+
+void Enemy_updateScout(Enemy* self)
+{
+    if (self->m_state != ENEMY_STATE_FIRING)
+        return;
+
+    LevelScene* scene = self->m_scene;
+    AssetManager* assets = LevelScene_getAssetManager(scene);
+
+    //* TODO 13: Tir d'un ennemi
+    if (SpriteAnim_frameChanged(self->m_firingAnim) == false) return;
+
+    int idx = SpriteAnim_getFrameIndex(self->m_firingAnim);
+    if (idx == 3)
+    {
+        Vec2 velocity = Vec2_set(-7.5f, 0.0f);
+        Vec2 position = Vec2_add(self->m_position, Vec2_set(-4 * PIX_TO_WORLD, PIX_TO_WORLD));
+        Bullet* bullet = Bullet_create(scene, position, velocity, BULLET_FIGHTER, -90.0f, DAMAGE_SMALL, -1);
+        LevelScene_addBullet(scene, bullet);
+        Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+    }
+    //*/
+}
+
+void Enemy_updateTorpedo(Enemy *self)
+{
+    if (self->m_state != ENEMY_STATE_FIRING)
+        return;
+
+    LevelScene* scene = self->m_scene;
+    AssetManager* assets = LevelScene_getAssetManager(scene);
+
+    //* TODO 13: Tir d'un ennemi
+    if (SpriteAnim_frameChanged(self->m_firingAnim) == false) return;
+
+    int idx = SpriteAnim_getFrameIndex(self->m_firingAnim);
+
+    if (idx == 5)
+    {
+        Vec2 velocity = Vec2_set(-3.5f, 0.0f);
+        Vec2 position = Vec2_add(self->m_position, Vec2_set(-4 * PIX_TO_WORLD, +9*PIX_TO_WORLD));
+        Bullet* bullet = Bullet_create(scene, position, velocity, BULLET_TORPEDO, -90.0f, DAMAGE_SMALL, -1);
+        LevelScene_addBullet(scene, bullet);
+        Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+    }
+    else
+    {
+        if (idx == 7)
+        {
+            Vec2 velocity = Vec2_set(-3.5f, 0.0f);
+            Vec2 position = Vec2_add(self->m_position, Vec2_set(-4 * PIX_TO_WORLD, -9*PIX_TO_WORLD));
+            Bullet* bullet = Bullet_create(scene, position, velocity, BULLET_TORPEDO, -90.0f, DAMAGE_SMALL, -1);
+            LevelScene_addBullet(scene, bullet);
+            Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+        }
+        else {
+            if (idx == 9) {
+                Vec2 velocity = Vec2_set(-3.5f, 0.0f);
+                Vec2 position = Vec2_add(self->m_position, Vec2_set(-4 * PIX_TO_WORLD, +15*PIX_TO_WORLD));
+                Bullet* bullet = Bullet_create(scene, position, velocity, BULLET_TORPEDO, -90.0f, DAMAGE_SMALL, -1);
+                LevelScene_addBullet(scene, bullet);
+                Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+            }
+            else {
+                if (idx == 11) {
+                    Vec2 velocity = Vec2_set(-3.5f, 0.0f);
+                    Vec2 position = Vec2_add(self->m_position, Vec2_set(-4 * PIX_TO_WORLD, -15*PIX_TO_WORLD));
+                    Bullet* bullet = Bullet_create(scene, position, velocity, BULLET_TORPEDO, -90.0f, DAMAGE_SMALL, -1);
+                    LevelScene_addBullet(scene, bullet);
+                    Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+                }
+
+                else {
+                    if (idx == 13) {
+                        Vec2 velocity = Vec2_set(-3.5f, 0.0f);
+                        Vec2 position = Vec2_add(self->m_position, Vec2_set(-4 * PIX_TO_WORLD, 21*PIX_TO_WORLD));
+                        Bullet* bullet = Bullet_create(scene, position, velocity, BULLET_TORPEDO, -90.0f, DAMAGE_SMALL, -1);
+                        LevelScene_addBullet(scene, bullet);
+                        Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+                    }
+                    else {
+                        if (idx == 15) {
+                            Vec2 velocity = Vec2_set(-3.5f, 0.0f);
+                            Vec2 position = Vec2_add(self->m_position, Vec2_set(-4 * PIX_TO_WORLD, -21* PIX_TO_WORLD));
+                            Bullet* bullet = Bullet_create(scene, position, velocity, BULLET_TORPEDO, -90.0f, DAMAGE_SMALL, -1);
+                            LevelScene_addBullet(scene, bullet);
+                            Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Enemy_updateBattlecruiser(Enemy* self)
+{
+    if (self->m_state != ENEMY_STATE_FIRING)
+        return;
+
+    LevelScene* scene = self->m_scene;
+    AssetManager* assets = LevelScene_getAssetManager(scene);
+
+    //* TODO 13: Tir d'un ennemi
+    if (SpriteAnim_frameChanged(self->m_firingAnim) == false) return;
+
+    int idx = SpriteAnim_getFrameIndex(self->m_firingAnim);
+    Vec2 vecteur_normal = { 0,1 };
+    float angle_rad = self->m_angle_tir * M_PI / 180;
+
+    Vec2 velocity = { vecteur_normal.x * cos(angle_rad) - vecteur_normal.y * sin(angle_rad), vecteur_normal.x * sin(angle_rad) + vecteur_normal.y * cos(angle_rad) };
+    velocity = Vec2_scale(Vec2_normalize(velocity), 5);
+
+
+    Vec2 position = Vec2_add(self->m_position, Vec2_set(-6 * PIX_TO_WORLD, +6 * PIX_TO_WORLD));
+    Bullet* bullet = Bullet_create(scene, position, velocity, BULLET_BATTLECRUISER, 360-self->m_angle_tir, DAMAGE_MED, -1);
+    LevelScene_addBullet(scene, bullet);
+    Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+
+    self->m_angle_tir -= 10;
+}
+
+void Enemy_updateFrigate(Enemy *self)
+{
+    if (self->m_state != ENEMY_STATE_FIRING)
+        return;
+
+    LevelScene* scene = self->m_scene;
+    AssetManager* assets = LevelScene_getAssetManager(scene);
+
+    //* TODO 13: Tir d'un ennemi
+    if (SpriteAnim_frameChanged(self->m_firingAnim) == false) return;
+
+    int idx = SpriteAnim_getFrameIndex(self->m_firingAnim);
+    if (idx == 2 || idx == 5)
+    {
+        Vec2 velocity = Vec2_set(-7.5f, 0.0f);
+        Vec2 position = Vec2_add(self->m_position, Vec2_set(-4 * PIX_TO_WORLD, 14*PIX_TO_WORLD));
+        Bullet* bullet = Bullet_create(scene, position, velocity, BULLET_FRIGATE, -90.0f, DAMAGE_BIG, -1);
+        LevelScene_addBullet(scene, bullet);
+        Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+
+        Vec2 position2 = Vec2_add(self->m_position, Vec2_set(-4 * PIX_TO_WORLD, -14*PIX_TO_WORLD));
+        Bullet* bullet2 = Bullet_create(scene, position2, velocity, BULLET_FRIGATE, -90.0f, DAMAGE_BIG, -1);
+        LevelScene_addBullet(scene, bullet2);
+        Game_playSoundFX(assets, SOUND_ENEMY_FIRE);
+    }
+}
+
+void Enemy_render(Enemy *self)
+{
+    LevelScene *scene = self->m_scene;
+    AssetManager *assets = LevelScene_getAssetManager(scene);
+    Camera *camera = LevelScene_getCamera(scene);
+    SDL_Rect *src = NULL;
+    SDL_Texture *texture = NULL;
+    SpriteSheet *spriteSheet = NULL;
+    int index = 0;
+
+    float scale = Camera_getWorldToViewScale(camera);
+    SDL_FRect dst = { 0 };
+    dst.h = self->m_extent.y * scale;
+    dst.w = self->m_extent.x * scale;
+    Camera_worldToView(camera, self->m_position, &dst.x, &dst.y);
+    dst.x -= 0.50f * dst.w;
+    dst.y -= 0.50f * dst.h;
+
+    //* health bar
+    SDL_FRect dst_health_ennemy = { 0 };
+    dst_health_ennemy.h = 70;
+    dst_health_ennemy.w = 80;
+    dst_health_ennemy.x = dst.x;
+    dst_health_ennemy.y = dst.y;
+    //*/
+
+    //* TODO 13: Affichage d'un ennemi
+    if ((self->m_state == ENEMY_STATE_FIRING) ||
+        (self->m_state == ENEMY_STATE_SHOWING))
+    {
+        spriteSheet = self->m_firingSpriteSheet;
+        index = SpriteAnim_getFrameIndex(self->m_firingAnim);
+        src = &(spriteSheet->rects[index]);
+        texture = spriteSheet->texture;
+        SDL_RenderCopyExF(g_renderer, texture, src, &dst, -90.0, NULL, 0);
+
+        //* bar de vie
+        switch (self->m_type)
+        {
+        default:
+        case ENEMY_TYPE_FIGHTER:
+            dst_health_ennemy.h = 70;
+            dst_health_ennemy.w = 80;
+            dst_health_ennemy.x = dst.x +40;
+            dst_health_ennemy.y = dst.y +10;
+
+            if (self->m_hp == FIGHTER_MAX_HP)
+                index = 0;
+            else
+                index = 3;
+
+            break;
+
+
+        case ENEMY_TYPE_SCOUT:
+            dst_health_ennemy.h = 70;
+            dst_health_ennemy.w = 80;
+            dst_health_ennemy.x = dst.x +40;
+            dst_health_ennemy.y = dst.y +10;
+
+            index = 0 ;
+
+            break;
+
+        case ENEMY_TYPE_TORPEDO:
+            dst_health_ennemy.h = 70;
+            dst_health_ennemy.w = 80;
+            dst_health_ennemy.x = dst.x +40;
+            dst_health_ennemy.y = dst.y-20;
+
+            if (self->m_hp == TORPEDO_MAX_HP)
+                index = 0;
+            else
+                index = 5 - (self->m_hp /5);
+
+            break;
+
+        case ENEMY_TYPE_BATTLECRUISER:
+            dst_health_ennemy.h = 70;
+            dst_health_ennemy.w = 80;
+            dst_health_ennemy.x = dst.x + 40;
+            dst_health_ennemy.y = dst.y - 20;
+
+            if (self->m_hp == BATTLECRUISER_MAX_HP)
+                index = 0;
+            else
+                index = 5 - (self->m_hp / 10);  // ne marchera pas, faire un switch case
+            break;
+
+        case ENEMY_TYPE_FRIGATE:
+            dst_health_ennemy.h = 70;
+            dst_health_ennemy.w = 80;
+            dst_health_ennemy.x = dst.x + 40;
+            dst_health_ennemy.y = dst.y - 20;
+
+            if (self->m_hp == FRIGATE_MAX_HP)
+                index = 0;
+            else
+                index = 5 - (self->m_hp / 5);
+
+            break;
+
+        }
+        spriteSheet = AssetManager_getSpriteSheet(assets, SPRITE_ENNEMY_HEALTH);
+        SpriteSheet_renderCopyF(spriteSheet, index, g_renderer, &dst_health_ennemy, 0, NULL, 0);
+        //*/
+    }
+    else if (self->m_state == ENEMY_STATE_DYING)
+    {
+        spriteSheet = self->m_dyingSpriteSheet;
+        index = SpriteAnim_getFrameIndex(self->m_dyingAnim);
+        src = &(spriteSheet->rects[index]);
+        texture = spriteSheet->texture;
+        SDL_RenderCopyExF(g_renderer, texture, src, &dst, -90.0, NULL, 0);
+    }
+    //*/
+}
+
+int Enemy_damage(Enemy *self, int damage)
+{
+    if (self->m_state == ENEMY_STATE_DYING ||
+        self->m_state == ENEMY_STATE_DEAD)
+    {
+        return 0;
+    }
+
+    //* TODO 17: Dommages à un ennemi
+    self->m_hp -= damage;
+
+    LevelScene *scene = self->m_scene;
+    AssetManager *assets = LevelScene_getAssetManager(scene);
+
+    int score = damage;
+    if (self->m_hp <= 0)
+    {
+        self->m_state = ENEMY_STATE_DYING;
+
+        SpriteAnim_restart(self->m_dyingAnim);
+        Game_playSoundFX(assets, SOUND_ENEMY_DIYNG);
+    }
+
+    return score;
+    //*/
+    return 0;
+}
+
+void Enemy_drawGizmos(Enemy *self, Gizmos *gizmos)
+{
+    Gizmos_drawCircle(gizmos, self->m_position, self->m_radius);
+}

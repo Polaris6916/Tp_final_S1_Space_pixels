@@ -1,0 +1,119 @@
+﻿/*
+    Copyright (c) Arnaud BANNIER and Nicolas BODIN.
+    Licensed under the MIT License.
+    See LICENSE.md in the project root for license information.
+*/
+
+#pragma once
+
+#include "settings.h"
+#include "utils/math.h"
+#include "utils/sprite_anim.h"
+#include "utils/gizmos.h"
+#include "game/game_common.h"
+
+#define FIGHTER_MAX_HP 10
+#define SCOUT_MAX_HP 5
+#define TORPEDO_MAX_HP 25
+#define BATTLECRUISER_MAX_HP 50
+#define FRIGATE_MAX_HP 25
+
+#define RAYON_CERCLE 20
+
+typedef struct LevelScene LevelScene;   
+
+typedef enum EnemyState
+{
+    ENEMY_STATE_SHOWING,
+    ENEMY_STATE_FIRING,
+    ENEMY_STATE_DYING,
+    ENEMY_STATE_DEAD,
+} EnemyState;
+
+typedef enum EnemyType
+{
+    ENEMY_TYPE_FIGHTER,
+    //ENEMY_TYPE_DREADNOUGHT,
+    ENEMY_TYPE_BATTLECRUISER,
+    ENEMY_TYPE_SCOUT,
+    ENEMY_TYPE_TORPEDO,
+    ENEMY_TYPE_FRIGATE,
+} EnemyType;
+
+typedef struct Enemy
+{
+    /// @brief Pointeur vers la scène du niveau.
+    LevelScene *m_scene;
+
+    /// @brief Position dans le référentiel monde.
+    Vec2 m_position;
+
+    /// @brief Position final après aparition
+    Vec2 m_position_final;
+
+    /// @brief Dimensions du sprite dans le réferentiel monde.
+    Vec2 m_extent;
+
+    /// @brief Rayon du cercle de collision dans le référentiel monde.
+    float m_radius;
+
+    /// @brief Type de l'ennmi.
+    /// Les valeurs possibles sont données dans EnemyType.
+    int m_type;
+
+    /// @brief Son des anim.
+    int m_sound;
+
+    /// @brief Etat de l'ennmi.
+    /// Les valeurs possibles sont données dans EnemyState.
+    int m_state;
+
+    /// @brief Points de vie de l'ennemi.
+    int m_hp;
+
+    /// @brief Angle de tir pour le battlecruiser
+    float m_angle_tir;
+
+    /// @brief Positon du rayon du cercle de déplacement
+    Vec2 m_rayon;
+
+    /// @brief Angle pour la translation
+    float m_angle_translation;
+
+    /// @brief Sprite sheet associée à l'attaque.
+    SpriteSheet *m_firingSpriteSheet;
+
+    /// @brief Sprite sheet associée à l'explosion de l'ennemi quand il est vaincu.
+    SpriteSheet *m_dyingSpriteSheet;
+
+    /// @brief Animation associée à l'attaque.
+    SpriteAnim *m_firingAnim;
+
+    /// @brief Animation associée à l'explosion de l'ennemi quand il est vaincu.
+    SpriteAnim *m_dyingAnim;
+
+    /// @brief Sprite sheet associée à l'explosion du joueur quand il est vaincu.
+    SpriteSheet* m_healthSpriteSheet_ennemy;
+
+    /// @brief animation barre de vie
+    SpriteAnim* m_healthBar_ennemy;
+} Enemy;
+
+Enemy *Enemy_create(LevelScene *scene, int type, Vec2 position);
+void Enemy_destroy(Enemy *self);
+
+void Enemy_update(Enemy *self);
+void Enemy_render(Enemy *self);
+int Enemy_damage(Enemy *self, int damage);
+void Enemy_drawGizmos(Enemy *self, Gizmos *gizmos);
+
+void Enemy_updateFigther(Enemy *self);
+void Enemy_updateScout(Enemy *self);
+void Enemy_updateTorpedo(Enemy *self);
+void Enemy_updateBattlecruiser(Enemy* self);
+void Enemy_updateFrigate(Enemy* self);
+
+INLINE bool Enemy_shouldBeDestroyed(Enemy *self)
+{
+    return (self->m_state == ENEMY_STATE_DEAD);
+}
